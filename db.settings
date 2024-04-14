@@ -1,0 +1,7 @@
+export APP_DB_USERNAME=postgres
+export APP_DB_PASSWORD=mysecretpassword
+export APP_DB_NAME=postgres
+export APP_DB_PORT=8085
+
+
+docker run --name some-postgres -p 8085:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
