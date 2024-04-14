@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go test github.com/franziseidl/cdas_semaphoreExample" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
+    <module name="cdas_semaphoreExample" />
+    <working_directory value="$PROJECT_DIR$" />
+    <envs>
+      <env name="APP_DB_USERNAME" value="postgres" />
+      <env name="APP_DB_PASSWORD" value="mysecretpassword" />
+      <env name="APP_DB_NAME" value="postgres" />
+      <env name="APP_DB_PORT" value="8085" />
+    </envs>
+    <kind value="PACKAGE" />
+    <package value="github.com/franziseidl/cdas_semaphoreExample" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
