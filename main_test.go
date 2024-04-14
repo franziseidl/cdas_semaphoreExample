@@ -159,15 +159,15 @@ func TestDeleteProduct(t *testing.T) {
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
-func TestGetProductByName(t *testing.T) {
+func TestGetProductsByName(t *testing.T) {
 	clearTable()
 	addProduct(main.Product{Name: "Testproduct", Price: 12.34})
 	addProduct(main.Product{Name: "Testproduct 2", Price: 12.35})
 	addProduct(main.Product{Name: "Testproduct 3", Price: 12.36})
 	addProduct(main.Product{Name: "Testproduct", Price: 12.50})
 
-	var jsonStr = []byte(`{"name": 'Testproduct'}`)
-	req, _ := http.NewRequest("POST", "/product/filter", bytes.NewBuffer(jsonStr))
+	var jsonStr = []byte(`{"name": "Testproduct"}`)
+	req, _ := http.NewRequest("POST", "/product/filterByName", bytes.NewBuffer(jsonStr))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
@@ -187,7 +187,7 @@ func TestGetProductByName(t *testing.T) {
 		if first.Price != 12.34 {
 			t.Errorf("Expected first product price to be '12.34'. Got '%v'", first.Price)
 		}
-		if second.Name != "Testproduct 1" {
+		if second.Name != "Testproduct" {
 			t.Errorf("Expected second product name to be Testproduct'. Got '%v'", second.Name)
 		}
 
@@ -205,7 +205,7 @@ func TestGetProductsByPrice(t *testing.T) {
 	addProduct(main.Product{Name: "Testproduct 4", Price: 50})
 	addProduct(main.Product{Name: "Testproduct 5", Price: 40})
 
-	var jsonStr = []byte(`{"min_price": 20, "max_price": 40}`)
+	var jsonStr = []byte(`{"minPrice": 20, "maxPrice": 40}`)
 	req, _ := http.NewRequest("POST", "/product/filterByPrice", bytes.NewBuffer(jsonStr))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
@@ -232,7 +232,7 @@ func TestGetProductsByPrice(t *testing.T) {
 		if second.Price != 30 {
 			t.Errorf("Expected second product price to be '30'. Got '%v'", second.Price)
 		}
-		if third.Name != "Testproduct 3" {
+		if third.Name != "Testproduct 5" {
 			t.Errorf("Expected third product to be 'Testproduct 5'. Got '%v'", third.Name)
 		}
 		if third.Price != 40 {
@@ -264,6 +264,23 @@ func TestDuplicateProduct(t *testing.T) {
 
 	if m["price"] != 12.34 {
 		t.Errorf("Expected product price to be '12.34'. Got '%v'", m["price"])
+	}
+}
+func TestDuplicateProduct_NotExisting_ShouldReturn404(t *testing.T) {
+	clearTable()
+	addProduct(main.Product{Name: "Testproduct 1", Price: 12.34})
+	addProduct(main.Product{Name: "Testproduct 2", Price: 55})
+	addProduct(main.Product{Name: "Testproduct 3", Price: 100})
+
+	var jsonStr = []byte(`{"originId": 5, "newName": "duplicate 1" }`)
+	req, _ := http.NewRequest("POST", "/product/duplicate", bytes.NewBuffer(jsonStr))
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusNotFound, response.Code)
+
+	var m map[string]string
+	json.Unmarshal(response.Body.Bytes(), &m)
+	if m["error"] != "Product not found" {
+		t.Errorf("Expected the 'error' key of the response to be set to 'Product not found'. Got '%s'", m["error"])
 	}
 }
 
