@@ -247,7 +247,7 @@ func TestDuplicateProduct(t *testing.T) {
 	addProduct(main.Product{Name: "Testproduct 2", Price: 55})
 	addProduct(main.Product{Name: "Testproduct 3", Price: 100})
 
-	var jsonStr = []byte(`{"originId": 1, newName: "duplicate 1" }`)
+	var jsonStr = []byte(`{"originId": 1, "newName": "duplicate 1" }`)
 	req, _ := http.NewRequest("POST", "/product/duplicate", bytes.NewBuffer(jsonStr))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusCreated, response.Code)
