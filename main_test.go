@@ -259,7 +259,7 @@ func TestDuplicateProduct(t *testing.T) {
 		t.Errorf("Expected product to have an id other 1.  But got '%v'", m["Id"])
 	}
 	if m["name"] != "duplicate 1" {
-		t.Errorf("Expected product name to be 'product 1'. Got '%v'", m["name"])
+		t.Errorf("Expected product name to be 'duplicate 1'. Got '%v'", m["name"])
 	}
 
 	if m["price"] != 12.34 {
