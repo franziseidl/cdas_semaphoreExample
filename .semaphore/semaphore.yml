@@ -53,7 +53,6 @@ blocks:
           - checkout
           - 'cache restore '
           - go mod vendor
-          - source env-sample
       jobs:
         - name: Run Tests
           commands:
@@ -82,7 +81,6 @@ blocks:
           - checkout
           - 'cache restore '
           - go mod vendor
-          - source env-sample
       jobs:
         - name: 'Build'
           commands:
