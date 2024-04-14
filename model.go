@@ -8,6 +8,7 @@ type product struct {
 	ID    int    `json:"ID"`
 	Name  string `json:"name"`
 	Price int    `json:"price"`
+	Price float32 `json:"price"`
 }
 
 func (p *product) getProduct(db *sql.DB) error {
