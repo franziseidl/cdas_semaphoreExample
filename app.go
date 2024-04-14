@@ -41,6 +41,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.getProduct).Methods("GET")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
+	a.Router.HandleFunc("/product/duplicate", a.duplicateProduct).Methods("POST")
 }
 
 func (a *App) getProduct(w http.ResponseWriter, r *http.Request) {
@@ -138,6 +139,41 @@ func (a *App) deleteProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+func (a *App) duplicateProduct(w http.ResponseWriter, r *http.Request) {
+	var req ProductDuplicateRequest
+	var origin Product
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&req); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	println("originId = " + strconv.Itoa(req.OriginId))
+	println("newName = " + req.NewName)
+	defer r.Body.Close()
+	origin.ID = req.OriginId
+
+	if err := origin.getProduct(a.DB); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			respondWithError(w, http.StatusNotFound, "Product not found")
+		default:
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	var p Product
+	p.Name = req.NewName
+	p.Price = origin.Price
+
+	if err := p.createProduct(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, p)
 }
 func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
