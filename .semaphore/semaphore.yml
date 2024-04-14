@@ -5,20 +5,16 @@ agent:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: Test
+  - name: Install
     task:
       jobs:
-        - name: go test
+        - name: Download Modules
           commands:
-            - 'sem-service start postgres --username=postgres --password=mysecretpassword --dbname=postgres '
             - sem-version go 1.16
-            - export GO111MODULE=on
-            - export GOPATH=~/go
-            - 'export PATH=/home/semaphore/go/bin:$PATH'
             - checkout
-            - go get ./...
-            - go test ./...
-            - go build -v .
+            - cache restore
+            - go mod vendor
+            - cache store
       env_vars:
         - name: APP_DB_USERNAME
           value: postgres
@@ -28,3 +24,46 @@ blocks:
           value: postgres
         - name: APP_DB_PORT
           value: '5432'
+        - name: GO111MODULE
+          value: 'on'
+        - name: GOFLAGS
+          value: '-mod=vendor'
+    dependencies: []
+  - name: Test
+    dependencies:
+      - Install
+    task:
+      env_vars:
+        - name: GO111MODULE
+          value: 'on'
+        - name: GOFLAGS
+          value: '-mod=vendor'
+      prologue:
+        commands:
+          - sem-version go 1.13
+          - sem-service start postgres
+          - checkout
+          - 'cache restore '
+          - go mod vendor
+          - source env-sample
+      jobs:
+        - name: Run Tests
+          commands:
+            - go test ./...
+  - name: Build
+    dependencies:
+      - Test
+    task:
+      prologue:
+        commands:
+          - sem-version go 1.13
+          - sem-service start postgres
+          - checkout
+          - 'cache restore '
+          - go mod vendor
+          - source env-sample
+      jobs:
+        - name: 'Job #1'
+          commands:
+            - go build -v -o go-mux.bin
+            - artifact push project --force go-mux.bin
