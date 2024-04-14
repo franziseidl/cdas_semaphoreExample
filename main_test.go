@@ -159,6 +159,28 @@ func TestDeleteProduct(t *testing.T) {
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
+func TestGetProductByName(t *testing.T) {
+	clearTable()
+	addProducts(1)
+
+	var jsonStr = []byte(`{"name": 'Product 1'}`)
+	req, _ := http.NewRequest("POST", "/product/Filter", bytes.NewBuffer(jsonStr))
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if m["name"] != "Product 1" {
+		t.Errorf("Expected Product name to be 'test Product'. Got '%v'", m["name"])
+	}
+
+	if m["price"] != 10 {
+		t.Errorf("Expected Product price to be '11.22'. Got '%v'", m["price"])
+	}
+
+}
+
 func addProducts(count int) {
 	if count < 1 {
 		count = 1
