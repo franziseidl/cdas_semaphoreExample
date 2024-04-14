@@ -52,7 +52,6 @@ blocks:
           - sem-service start postgres
           - checkout
           - 'cache restore '
-          - go mod vendor
       jobs:
         - name: Run Tests
           commands:
@@ -80,9 +79,8 @@ blocks:
           - sem-service start postgres
           - checkout
           - 'cache restore '
-          - go mod vendor
       jobs:
-        - name: 'Build'
+        - name: Build
           commands:
             - go build -v -o go-mux.bin
             - artifact push project --force go-mux.bin
