@@ -34,6 +34,14 @@ blocks:
       - Install
     task:
       env_vars:
+        - name: APP_DB_USERNAME
+          value: postgres
+        - name: APP_DB_PASSWORD
+          value: mysecretpassword
+        - name: APP_DB_NAME
+          value: postgres
+        - name: APP_DB_PORT
+          value: '5432'
         - name: GO111MODULE
           value: 'on'
         - name: GOFLAGS
@@ -54,6 +62,19 @@ blocks:
     dependencies:
       - Test
     task:
+      env_vars:
+        - name: APP_DB_USERNAME
+          value: postgres
+        - name: APP_DB_PASSWORD
+          value: mysecretpassword
+        - name: APP_DB_NAME
+          value: postgres
+        - name: APP_DB_PORT
+          value: '5432'
+        - name: GO111MODULE
+          value: 'on'
+        - name: GOFLAGS
+          value: '-mod=vendor'
       prologue:
         commands:
           - sem-version go 1.13
@@ -63,7 +84,7 @@ blocks:
           - go mod vendor
           - source env-sample
       jobs:
-        - name: 'Job #1'
+        - name: 'Build'
           commands:
             - go build -v -o go-mux.bin
             - artifact push project --force go-mux.bin
