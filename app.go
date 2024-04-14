@@ -175,6 +175,40 @@ func (a *App) duplicateProduct(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusCreated, p)
 }
+func (a *App) filterByName(w http.ResponseWriter, r *http.Request) {
+	var filter ProductNameFilter
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&filter); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+
+	p, err := getProductsByName(a.DB, filter.Name)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, p)
+}
+func (a *App) filterByPrice(w http.ResponseWriter, r *http.Request) {
+	var filter ProductPriceFilter
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&filter); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+
+	p, err := getProductsByPriceRange(a.DB, filter)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, p)
+}
 func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
