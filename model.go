@@ -9,6 +9,17 @@ type Product struct {
 	Name  string  `json:"name"`
 	Price float32 `json:"price"`
 }
+type ProductNameFilter struct {
+	Name string `json:"name"`
+}
+type ProductPriceFilter struct {
+	MinPrice float32 `json:"minPrice"`
+	MaxPrice float32 `json:"maxPrice"`
+}
+type ProductDuplicateRequest struct {
+	OriginId int    `json:"originId"`
+	NewName  string `json:"newName"`
+}
 
 func (p *Product) getProduct(db *sql.DB) error {
 	return db.QueryRow("SELECT name, price FROM products WHERE id=$1",
