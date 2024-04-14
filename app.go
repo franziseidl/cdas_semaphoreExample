@@ -149,8 +149,6 @@ func (a *App) duplicateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	println("originId = " + strconv.Itoa(req.OriginId))
-	println("newName = " + req.NewName)
 	defer r.Body.Close()
 	origin.ID = req.OriginId
 
