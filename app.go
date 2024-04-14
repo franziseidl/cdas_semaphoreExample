@@ -32,6 +32,7 @@ func (a *App) Initialize(user, password, dbname string, port string) {
 	a.initializeRoutes()
 }
 func (a *App) Run(addr string) {
+	println("Listening on port 8010")
 	log.Fatal(http.ListenAndServe(":8010", a.Router))
 }
 func (a *App) initializeRoutes() {
