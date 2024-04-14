@@ -74,3 +74,43 @@ func getProducts(db *sql.DB, start, count int) ([]Product, error) {
 
 	return products, nil
 }
+func getProductsByName(db *sql.DB, name string) ([]Product, error) {
+	rows, err := db.Query(
+		"SELECT id, name,  price FROM products WHERE name = $1", name)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	products := []Product{}
+
+	for rows.Next() {
+		var p Product
+		if err := rows.Scan(&p.ID, &p.Name, &p.Price); err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
+}
+func getProductsByPriceRange(db *sql.DB, filter ProductPriceFilter) ([]Product, error) {
+	rows, err := db.Query(
+		"SELECT id, name,  price FROM products WHERE price >= $1 AND price <= $2", filter.MinPrice, filter.MaxPrice)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	products := []Product{}
+
+	for rows.Next() {
+		var p Product
+		if err := rows.Scan(&p.ID, &p.Name, &p.Price); err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
+}
