@@ -13,7 +13,6 @@ blocks:
             - sem-version go 1.16
             - checkout
             - cache restore
-            - go mod vendor
             - cache store
       env_vars:
         - name: APP_DB_USERNAME
