@@ -10,7 +10,7 @@ blocks:
       jobs:
         - name: go test
           commands:
-            - sem-service start postgres
+            - 'sem-service start postgres --username=postgres --password=mysecretpassword --dbname=postgres '
             - sem-version go 1.16
             - export GO111MODULE=on
             - export GOPATH=~/go
@@ -19,3 +19,12 @@ blocks:
             - go get ./...
             - go test ./...
             - go build -v .
+      env_vars:
+        - name: APP_DB_USERNAME
+          value: postgres
+        - name: APP_DB_PASSWORD
+          value: mysecretpassword
+        - name: APP_DB_NAME
+          value: postgres
+        - name: APP_DB_PORT
+          value: '5432'
