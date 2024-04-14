@@ -41,6 +41,9 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.getProduct).Methods("GET")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.updateProduct).Methods("PUT")
 	a.Router.HandleFunc("/product/{id:[0-9]+}", a.deleteProduct).Methods("DELETE")
+	a.Router.HandleFunc("/product/duplicate", a.duplicateProduct).Methods("POST")
+	a.Router.HandleFunc("/product/filterByName", a.filterByName).Methods("POST")
+	a.Router.HandleFunc("/product/filterByPrice", a.filterByPrice).Methods("POST")
 }
 
 func (a *App) getProduct(w http.ResponseWriter, r *http.Request) {
