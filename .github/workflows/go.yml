@@ -2,10 +2,12 @@ name: Go
 on:
   push:
     branches:
-      - master
+      - main
+      - no_semaphore
   pull_request:
     branches:
-      - master
+      - main
+      - no_semaphore
 
 env:
   APP_DB_USERNAME: postgres
