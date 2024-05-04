@@ -44,7 +44,7 @@ jobs:
       - name: Test
         run: go test -v ./...
   sonarcloud:
-    # needs: build
+    needs: build
     name: SonarCloud Scan
     runs-on: ubuntu-latest
     steps:
