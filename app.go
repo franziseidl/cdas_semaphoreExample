@@ -17,6 +17,8 @@ type App struct {
 	DB     *sql.DB
 }
 
+const invalidRequestPayloadMsg = "Invalid request payload"
+
 func (a *App) Initialize(user, password, dbname string, port string) {
 	connectionString :=
 		fmt.Sprintf("user=%s password=%s dbname=%s port=%s sslmode=disable", user, password, dbname, port)
@@ -90,7 +92,7 @@ func (a *App) createProduct(w http.ResponseWriter, r *http.Request) {
 	var p Product
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&p); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		respondWithError(w, http.StatusBadRequest, invalidRequestPayloadMsg)
 		return
 	}
 	defer r.Body.Close()
@@ -113,7 +115,7 @@ func (a *App) updateProduct(w http.ResponseWriter, r *http.Request) {
 	var p Product
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&p); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		respondWithError(w, http.StatusBadRequest, invalidRequestPayloadMsg)
 		return
 	}
 	defer r.Body.Close()
@@ -147,7 +149,7 @@ func (a *App) duplicateProduct(w http.ResponseWriter, r *http.Request) {
 	var origin Product
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&req); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		respondWithError(w, http.StatusBadRequest, invalidRequestPayloadMsg)
 		return
 	}
 
@@ -179,7 +181,7 @@ func (a *App) filterByName(w http.ResponseWriter, r *http.Request) {
 	var filter ProductNameFilter
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&filter); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		respondWithError(w, http.StatusBadRequest, invalidRequestPayloadMsg)
 		return
 	}
 	defer r.Body.Close()
@@ -196,7 +198,7 @@ func (a *App) filterByPrice(w http.ResponseWriter, r *http.Request) {
 	var filter ProductPriceFilter
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&filter); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		respondWithError(w, http.StatusBadRequest, invalidRequestPayloadMsg)
 		return
 	}
 	defer r.Body.Close()
