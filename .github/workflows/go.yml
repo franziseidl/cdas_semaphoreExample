@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - main
-      - no_semaphore
   pull_request:
     branches:
       - main
-      - no_semaphore
 
 env:
   APP_DB_USERNAME: postgres
