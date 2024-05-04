@@ -2,10 +2,12 @@ name: Go
 on:
   push:
     branches:
-      - master
+      - main
+      - no_semaphore
   pull_request:
     branches:
-      - master
+      - main
+      - no_semaphore
 
 env:
   APP_DB_USERNAME: postgres
@@ -14,6 +16,19 @@ env:
   APP_DB_PORT: 5432
 jobs:
   build:
+    name: "Build and Test"
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: mysecretpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,4 +43,24 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+  sonarcloud:
+    needs: build
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check content
+        run: |
+          pwd
+          ls
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+        
+            
+            
 
